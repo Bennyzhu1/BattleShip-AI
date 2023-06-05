@@ -1,6 +1,19 @@
 package cs3500.pa04;
 
-// TODO: document
+/**
+ * Responsible for the application's entry point and running the client
+ */
 public class Driver {
-  // TODO: implement
+  /**
+   * Entry point method
+   *
+   * @param args Command-line arguments
+   */
+  public static void main(String[] args) {
+
+  }
+
+  private static void runClient() {
+
+  }
 }
