@@ -153,8 +153,8 @@ public abstract class AbstractPlayer implements Player {
       }
     }
 
-    this.board.setShots(myHits, Board.Impact.HIT);
-    this.board.setShots(misses, Board.Impact.MISS);
+    this.board.setShots(myHits, Impact.HIT);
+    this.board.setShots(misses, Impact.MISS);
 
     return hits;
   }

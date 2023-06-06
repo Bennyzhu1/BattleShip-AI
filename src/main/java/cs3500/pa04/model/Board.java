@@ -15,13 +15,6 @@ public class Board {
   public List<Ship> standingShips;
 
   /**
-   * Type of impact on the
-   */
-  public enum Impact {
-    HIT, MISS
-  }
-
-  /**
    * Board constructor
    *
    * @param height Height of board

@@ -81,7 +81,7 @@ class BoardTest {
     shots.add(new Coord(3, 4));
     shots.add(new Coord(2, 4));
 
-    testBoard.setShots(shots, Board.Impact.HIT);
+    testBoard.setShots(shots, Impact.HIT);
 
     // Test all HIT
     assertEquals(testBoard.grid[0][0], 'H');
@@ -113,7 +113,7 @@ class BoardTest {
     shots.add(new Coord(3, 5));
     shots.add(new Coord(4, 5));
 
-    testBoard.setShots(shots, Board.Impact.MISS);
+    testBoard.setShots(shots, Impact.MISS);
 
     // Test for all MISS
     assertEquals(testBoard.grid[0][2], 'M');
@@ -131,9 +131,9 @@ class BoardTest {
   void testSetShotsErrors() {
     // Test wrong enums
     assertThrows(IllegalArgumentException.class,
-        () -> testBoard.setShots(new ArrayList<>(), Board.Impact.valueOf("hit")));
+        () -> testBoard.setShots(new ArrayList<>(), Impact.valueOf("hit")));
     assertThrows(IllegalArgumentException.class,
-        () -> testBoard.setShots(new ArrayList<>(), Board.Impact.valueOf("miss")));
+        () -> testBoard.setShots(new ArrayList<>(), Impact.valueOf("miss")));
   }
 
   /**
@@ -155,7 +155,7 @@ class BoardTest {
     testBoard.grid[2][2] = 'C';
     testBoard.grid[2][3] = 'H';
 
-    testBoard.setShots(shots, Board.Impact.HIT);
+    testBoard.setShots(shots, Impact.HIT);
 
     assertEquals(testBoard.grid[0][0], 'H');
     assertEquals(testBoard.grid[0][1], 'H');
@@ -178,7 +178,7 @@ class BoardTest {
     shots.add(new Coord(3, 5));
     shots.add(new Coord(4, 5));
 
-    testBoard.setShots(shots, Board.Impact.MISS);
+    testBoard.setShots(shots, Impact.MISS);
 
     assertEquals(testBoard.grid[0][2], 'H');
     assertEquals(testBoard.grid[0][3], 'M');
