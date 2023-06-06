@@ -1,4 +1,4 @@
-package cs3500.pa04;
+package cs3500.pa04.client;
 
 import cs3500.pa04.controller.BattleSalvoController;
 import cs3500.pa04.model.AiPlayer;
@@ -26,12 +26,12 @@ public class Driver {
       throw new RuntimeException("An unexpected error occurred.");
     }
 
-//    Controller controller;
-//    Socket socket;
-//    Player player;
-//
-//    controller = new ProxyController(socket, player);
-//    controller.run();
+    //    Controller controller;
+    //    Socket socket;
+    //    Player player;
+
+    //    controller = new ProxyController(socket, player);
+    //    controller.run();
   }
 
   private static void runClient() {
