@@ -1,6 +1,6 @@
 package cs3500.pa04.model;
 
-import cs3500.pa03.view.BattleSalvoView;
+import cs3500.pa04.view.BattleSalvoView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

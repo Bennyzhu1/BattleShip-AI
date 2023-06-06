@@ -1,30 +1,14 @@
-package cs3500.pa04.model;
+package cs3500.pa04;
 
-import cs3500.pa04.view.BattleSalvoView;
-import java.io.InputStream;
+import cs3500.pa04.model.AbstractPlayer;
+import cs3500.pa04.model.Coord;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Manual player implementation
+ * Mock Ai player for testing the game and controller
  */
-public class ManualPlayer extends AbstractPlayer {
-  InputStream in;
-
-  public ManualPlayer() {
-    this(System.in);
-  }
-
-  /**
-   * For input streams
-   *
-   * @param in InputStream
-   */
-  ManualPlayer(InputStream in) {
-    this.in = in;
-  }
-
-
+public class MockAiPlayer extends AbstractPlayer {
 
   /**
    * Get the player's name.
@@ -33,10 +17,11 @@ public class ManualPlayer extends AbstractPlayer {
    */
   @Override
   public String name() {
-    return "Player Manual";
+    return "Mock Ai";
   }
 
   /**
+   * Mock version of takeShots, testing for data
    * Returns this player's shots on the opponent's board. The number of shots returned should
    * equal the number of ships on this player's board that have not sunk.
    *
@@ -44,10 +29,7 @@ public class ManualPlayer extends AbstractPlayer {
    */
   @Override
   public List<Coord> takeShots() {
-    BattleSalvoView bsv = new BattleSalvoView(this.in);
-    if (super.board.standingShips.size() == 0) {
-      return new ArrayList<>();
-    }
+    List<Coord> takenShots = new ArrayList<>();
 
     int maxAllowed = 0;
     for (boolean[] bool : super.alreadyTaken) {
@@ -58,9 +40,9 @@ public class ManualPlayer extends AbstractPlayer {
       }
     }
 
-    bsv.displayBoard("My Board Data:", super.board, false);
-    List<Coord> takenShots = bsv.promptCoords("Enter the coordinates for your shots.",
-        super.board, maxAllowed);
+    for (int i = 0; i < Math.min(board.standingShips.size(), maxAllowed); i++) {
+      takenShots.add(new Coord(i, i));
+    }
 
     for (Coord coord : takenShots) {
       this.alreadyTaken[coord.x()][coord.y()] = true;

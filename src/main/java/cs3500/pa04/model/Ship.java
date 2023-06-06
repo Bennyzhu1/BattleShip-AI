@@ -1,8 +1,5 @@
 package cs3500.pa04.model;
 
-import cs3500.pa04.client.Coord;
-import cs3500.pa04.model.ShipType;
-
 /**
  * Record that holds the ship and its location
  *

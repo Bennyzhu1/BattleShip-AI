@@ -1,4 +1,4 @@
-package cs3500.pa04.client;
+package cs3500.pa04.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

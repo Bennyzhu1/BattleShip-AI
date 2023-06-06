@@ -1,30 +1,15 @@
-package cs3500.pa04.model;
+package cs3500.pa04;
 
-import cs3500.pa04.view.BattleSalvoView;
-import java.io.InputStream;
+import cs3500.pa04.model.AbstractPlayer;
+import cs3500.pa04.model.Coord;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Manual player implementation
+ * Mock manual player for testing the game and controller
  */
-public class ManualPlayer extends AbstractPlayer {
-  InputStream in;
-
-  public ManualPlayer() {
-    this(System.in);
-  }
-
-  /**
-   * For input streams
-   *
-   * @param in InputStream
-   */
-  ManualPlayer(InputStream in) {
-    this.in = in;
-  }
-
-
+public class MockManualPlayer extends AbstractPlayer {
+  public int internalCount = 0;
 
   /**
    * Get the player's name.
@@ -33,7 +18,7 @@ public class ManualPlayer extends AbstractPlayer {
    */
   @Override
   public String name() {
-    return "Player Manual";
+    return "Mock Manual";
   }
 
   /**
@@ -44,10 +29,7 @@ public class ManualPlayer extends AbstractPlayer {
    */
   @Override
   public List<Coord> takeShots() {
-    BattleSalvoView bsv = new BattleSalvoView(this.in);
-    if (super.board.standingShips.size() == 0) {
-      return new ArrayList<>();
-    }
+    List<Coord> takenShots = new ArrayList<>();
 
     int maxAllowed = 0;
     for (boolean[] bool : super.alreadyTaken) {
@@ -58,12 +40,18 @@ public class ManualPlayer extends AbstractPlayer {
       }
     }
 
-    bsv.displayBoard("My Board Data:", super.board, false);
-    List<Coord> takenShots = bsv.promptCoords("Enter the coordinates for your shots.",
-        super.board, maxAllowed);
+    int limit = Math.min(super.board.standingShips.size(), maxAllowed);
+
+    for (int row = 0; row < limit; row++) {
+      takenShots.add(new Coord(row, this.internalCount));
+    }
 
     for (Coord coord : takenShots) {
       this.alreadyTaken[coord.x()][coord.y()] = true;
+    }
+
+    if (this.internalCount < limit) {
+      this.internalCount++;
     }
 
     return takenShots;
