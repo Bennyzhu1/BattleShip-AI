@@ -42,7 +42,7 @@ public abstract class AbstractPlayer implements Player {
     List<Ship> fleet = new ArrayList<>();
 
     for (ShipType st : specifications.keySet()) {
-      int size = st.size;
+      int size = st.size();
       for (int i = 0; i < specifications.get(st); i++) {
         Coord[] coords = generateShipCoords(height, width, size);
         while (overlaps(fleet, coords)) {
