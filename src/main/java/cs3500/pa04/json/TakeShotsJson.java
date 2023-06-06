@@ -8,3 +8,4 @@ import java.util.List;
 public record TakeShotsJson(@JsonProperty("take-shots") List<Coord> shots,
                             @JsonProperty("arguments") JsonNode arguments) {
 }
+
