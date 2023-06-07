@@ -1,8 +1,14 @@
 package cs3500.pa04.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
+import cs3500.pa04.model.GameType;
 
-public record JoinJson(@JsonProperty("join") String join,
-                       @JsonProperty("arguments") JsonNode arguments) {
+/**
+ * Record for join response
+ *
+ * @param name Player name
+ * @param gameType Type of game
+ */
+public record JoinJson(@JsonProperty("name") String name,
+                       @JsonProperty("game-type") GameType gameType) {
 }
