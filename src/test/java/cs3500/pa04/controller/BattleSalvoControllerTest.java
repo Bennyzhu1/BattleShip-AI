@@ -355,12 +355,11 @@ class BattleSalvoControllerTest {
     out.reset();
 
     // Test draw
-    expected = """
-        Mock Manual had a draw.
-        Mock Manual had a draw with Mock Ai
-        Mock Ai had a draw.
-        Mock Ai had a draw with Mock Manual
-        """;
+    expected = "Mock Manual had a draw."
+        + System.lineSeparator() + "Mock Manual had a draw with Mock Ai"
+        + System.lineSeparator() + "Mock Ai had a draw."
+        + System.lineSeparator() + "Mock Ai had a draw with Mock Manual"
+        + System.lineSeparator();
 
     bsc.battleResult(mockManualPlayer, mockAiPlayer, 0, 0);
     assertEquals(expected, out.toString());

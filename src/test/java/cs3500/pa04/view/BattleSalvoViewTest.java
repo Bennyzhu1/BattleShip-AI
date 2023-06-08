@@ -82,44 +82,41 @@ class BattleSalvoViewTest {
             new Coord(4, 4)}));
     Board testBoard = new Board(6, 6, ships);
     bsv.displayBoard("visible", testBoard, false);
-    assertEquals("""
-        visible
-        C B 0 0 0 0
-        C B 0 0 0 0
-        C B D S S 0
-        C B D S S 0
-        C B D S S 0
-        C 0 D 0 S 0
-                
-        """, out.toString());
+    String boardData = "visible"
+        + System.lineSeparator() + "C B 0 0 0 0"
+        + System.lineSeparator() + "C B 0 0 0 0"
+        + System.lineSeparator() + "C B D S S 0"
+        + System.lineSeparator() + "C B D S S 0"
+        + System.lineSeparator() + "C B D S S 0"
+        + System.lineSeparator() + "C 0 D 0 S 0"
+        + System.lineSeparator() + System.lineSeparator();
+    assertEquals(boardData, out.toString());
     out.reset();
 
+    String boardDataNotVisible = "not visible"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + System.lineSeparator();
     bsv.displayBoard("not visible", testBoard, true);
-    assertEquals("""
-        not visible
-        0 0 0 0 0 0
-        0 0 0 0 0 0
-        0 0 0 0 0 0
-        0 0 0 0 0 0
-        0 0 0 0 0 0
-        0 0 0 0 0 0
-                
-        """, out.toString());
+    assertEquals(boardDataNotVisible, out.toString());
     out.reset();
 
     testBoard.grid[0][0] = 'H';
     testBoard.grid[0][1] = 'M';
     bsv.displayBoard("some visibility", testBoard, true);
-    assertEquals("""
-        some visibility
-        H M 0 0 0 0
-        0 0 0 0 0 0
-        0 0 0 0 0 0
-        0 0 0 0 0 0
-        0 0 0 0 0 0
-        0 0 0 0 0 0
-                
-        """, out.toString());
+    String boardDataSomeVisible = "some visibility"
+        + System.lineSeparator() + "H M 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0"
+        + System.lineSeparator() + System.lineSeparator();
+    assertEquals(boardDataSomeVisible, out.toString());
   }
 
   /**
