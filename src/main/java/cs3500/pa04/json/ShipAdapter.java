@@ -8,6 +8,9 @@ import cs3500.pa04.model.Ship;
 import java.util.Arrays;
 import java.util.Comparator;
 
+/**
+ * Serializable structure for ships
+ */
 public class ShipAdapter {
   private final Coord start;
   private final int length;
@@ -22,8 +25,8 @@ public class ShipAdapter {
     this(Arrays.stream(ship.coords())
             .sorted(Comparator.comparingInt(c -> (c.x() + c.y()))).toList().get(0),
         ship.coords().length,
-        Arrays.stream(ship.coords()).allMatch(coord -> coord.y() == ship.coords()[0].y()) ?
-            Direction.VERTICAL : Direction.HORIZONTAL);
+        Arrays.stream(ship.coords()).allMatch(coord -> coord.y() == ship.coords()[0].y())
+            ? Direction.VERTICAL : Direction.HORIZONTAL);
   }
 
   /**

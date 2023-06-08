@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Successful hits record
  *
- * @param successfulHits
+ * @param successfulHits The list of successful hits
  */
 public record SuccessfulHitsJson(@JsonProperty("coordinates") List<Coord> successfulHits) {
 }
