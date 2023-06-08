@@ -8,10 +8,13 @@ import cs3500.pa04.model.Ship;
 import java.util.Arrays;
 import java.util.Comparator;
 
+/**
+ * Serializable structure for ships
+ */
 public class ShipAdapter {
-  private final Coord start;
+  private final Coord coord;
   private final int length;
-  private final Direction dir;
+  private final Direction direction;
 
   /**
    * Constructor for ShipAdapter by passing in a Ship
@@ -19,28 +22,26 @@ public class ShipAdapter {
    * @param ship The Ship
    */
   public ShipAdapter(Ship ship) {
-    this(Arrays.stream(ship.coords())
-            .sorted(Comparator.comparingInt(c -> (c.x() + c.y()))).toList().get(0),
-        ship.coords().length,
-        Arrays.stream(ship.coords()).allMatch(coord -> coord.y() == ship.coords()[0].y()) ?
-            Direction.VERTICAL : Direction.HORIZONTAL);
+    this(ship.coords()[0], ship.coords().length,
+        Arrays.stream(ship.coords()).allMatch(coord -> coord.y() == ship.coords()[0].y())
+            ? Direction.VERTICAL : Direction.HORIZONTAL);
   }
 
   /**
    * Constructor for ShipAdapter by passing in a ship's attributes
    *
-   * @param start Starting coordinate
-   * @param length Length of ship (or size)
-   * @param dir Direction of the ship
+   * @param coord     Starting coordinate
+   * @param length    Length of ship (or size)
+   * @param direction Direction of the ship
    */
   @JsonCreator
   public ShipAdapter(
-      @JsonProperty("coord") Coord start,
+      @JsonProperty("coord") Coord coord,
       @JsonProperty("length") int length,
-      @JsonProperty("direction") Direction dir) {
-    this.start = start;
+      @JsonProperty("direction") Direction direction) {
+    this.coord = coord;
     this.length = length;
-    this.dir = dir;
+    this.direction = direction;
   }
 
   /**
@@ -48,8 +49,8 @@ public class ShipAdapter {
    *
    * @return The starting coordinate
    */
-  public Coord getStart() {
-    return this.start;
+  public Coord getCoord() {
+    return this.coord;
   }
 
   /**
@@ -66,7 +67,7 @@ public class ShipAdapter {
    *
    * @return The direction of the ship
    */
-  public Direction getDir() {
-    return this.dir;
+  public Direction getDirection() {
+    return this.direction;
   }
 }
