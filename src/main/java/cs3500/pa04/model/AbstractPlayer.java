@@ -145,8 +145,8 @@ public abstract class AbstractPlayer implements Player {
     for (Coord shipCoord : this.board.shipLocations.keySet()) {
       for (Coord oppCoord : opponentShotsOnBoard) {
         if (shipCoord.x() == oppCoord.x() && shipCoord.y() == oppCoord.y()) {
-          myHits.add(shipCoord);
-          hits.add(oppCoord);
+          myHits.add(oppCoord);
+          hits.add(shipCoord);
         } else {
           misses.add(oppCoord);
         }
