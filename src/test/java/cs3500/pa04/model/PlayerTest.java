@@ -137,18 +137,18 @@ class PlayerTest {
     specs.put(ShipType.SUBMARINE, 1);
     ai.setup(8, 8, specs);
     List<Coord> takenShots = ai.takeShots();
-    assertEquals("""
-        Ai Board Data:
-        0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0
-        0 0 0 0 0 0 0 0
-        
-        """, out.toString());
+    String boardData = "Ai Board Data:"
+        + System.lineSeparator() + "0 0 0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0 0 0"
+        + System.lineSeparator() + "0 0 0 0 0 0 0 0"
+        + System.lineSeparator() + System.lineSeparator();
+
+    assertEquals(boardData, out.toString());
     assertTrue(takenShots.size() > 0);
     out.reset();
 
