@@ -9,9 +9,9 @@ import java.util.Map;
  *
  * @param width  The width
  * @param height The height
- * @param ships  Map of ships and their counts
+ * @param fleetSpec  Map of ships and their counts
  */
 public record SetupAdapter(@JsonProperty("width") int width,
                         @JsonProperty("height") int height,
-                        @JsonProperty("fleet-spec") Map<ShipType, Integer> ships) {
+                        @JsonProperty("fleet-spec") Map<ShipType, Integer> fleetSpec) {
 }
