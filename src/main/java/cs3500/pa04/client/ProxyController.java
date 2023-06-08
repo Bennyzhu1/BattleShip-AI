@@ -87,7 +87,7 @@ public class ProxyController {
    * Joins a game
    */
   private void doJoin() {
-    JoinJson joinJson = new JoinJson(this.player.name(), GameType.SINGLE);
+    JoinJson joinJson = new JoinJson("KiyonoKara", GameType.SINGLE);
     JsonNode joinArgs = JsonUtils.serializeRecord(joinJson);
     MessageJson joinResponse = new MessageJson("join", joinArgs);
     this.out.println(JsonUtils.serializeRecord(joinResponse));

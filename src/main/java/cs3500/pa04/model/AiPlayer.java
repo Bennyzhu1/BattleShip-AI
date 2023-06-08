@@ -18,7 +18,7 @@ public class AiPlayer extends AbstractPlayer {
    */
   @Override
   public String name() {
-    return "KiyonoKara";
+    return "Player Ai";
   }
 
   /**
