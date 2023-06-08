@@ -49,8 +49,8 @@ public class AiPlayer extends AbstractPlayer {
     }
 
     for (int i = 0; i < Math.min(board.standingShips.size(), maxAllowed); i++) {
-      x = random.nextInt(width + 1);
-      y = random.nextInt(height + 1);
+      x = random.nextInt(width);
+      y = random.nextInt(height);
       takenShots.add(new Coord(x, y));
 
       List<Coord> noDupes = new HashSet<>(takenShots).stream().toList();
