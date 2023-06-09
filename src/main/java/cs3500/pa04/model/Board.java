@@ -1,64 +1,56 @@
 package cs3500.pa04.model;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Represents the Board data
+ * Class for the boards in the game
  */
 public class Board {
-  public final char[][] grid;
-  public final Map<Coord, Ship> shipLocations;
-  public List<Ship> standingShips;
+  /**
+   * The players board with ships
+   */
+  public String[][] board;
+  /**
+   * The enemys board without ships present
+   */
+  public String[][] enemyBoard;
 
   /**
-   * Board constructor
+   * Board Constructor
    *
-   * @param height Height of board
-   * @param width  Width of board
+   * @param height Height of the given board.
+   * @param width  Width of the given board
    */
-  public Board(int height, int width, List<Ship> ships) {
-    this.grid = new char[width][height];
-
-    for (char[] chars : this.grid) {
-      Arrays.fill(chars, '0');
-    }
-
-    shipLocations = new HashMap<>();
-    for (Ship ship : ships) {
-      for (Coord coord : ship.coords()) {
-        shipLocations.put(coord, ship);
-        this.grid[coord.x()][coord.y()] = ship.shipType().name().charAt(0);
-      }
-    }
-    this.standingShips = ships;
-
+  public Board(int height, int width) {
+    this.board = new String[width][height];
+    this.enemyBoard = new String[width][height];
   }
 
   /**
-   * Sets the board's shots
+   * Forms the allay ship, placing all the ships on the board
    *
-   * @param shots      The coordinates of the shots taken
-   * @param impactType The type of impact, hit or miss, H / M
+   * @param ships the list of ships that have been generated.
    */
-  public void setShots(List<Coord> shots, Impact impactType) {
-    if (impactType == Impact.HIT) {
-      for (Coord coord : shots) {
-        this.grid[coord.x()][coord.y()] = impactType.name().charAt(0);
-        this.shipLocations.remove(coord);
-      }
-      this.standingShips = new HashSet<>(this.shipLocations.values()).stream().toList();
-    }
-
-    if (impactType == Impact.MISS) {
-      for (Coord coord : shots) {
-        if (this.grid[coord.x()][coord.y()] != 'H') {
-          this.grid[coord.x()][coord.y()] = 'M';
-        }
+  public void formShip(List<Ship> ships) {
+    formEmptyBoard();
+    for (Ship s : ships) {
+      for (Coord c : s.getCoords()) {
+        ShipType st = s.getShipType();
+        board[c.getX()][c.getY()] = st.abrev;
       }
     }
   }
+
+  /**
+   * Forms an empty board for the ally and the enemy as a baseline
+   */
+  private void formEmptyBoard() {
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board[i].length; j++) {
+        enemyBoard[i][j] = "-";
+        board[i][j] = "-";
+      }
+    }
+  }
+
 }

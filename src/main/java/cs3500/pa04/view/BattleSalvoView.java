@@ -1,6 +1,5 @@
 package cs3500.pa04.view;
 
-import cs3500.pa04.model.Board;
 import cs3500.pa04.model.Coord;
 import java.io.InputStream;
 import java.util.ArrayList;
