@@ -34,12 +34,12 @@ public class AiPlayer extends AbstractPlayer {
     Random random = new Random();
     int x;
     int y;
-    int width = board.grid.length;
-    int height = board.grid[0].length;
+    int width = super.allyBoard.board.length;
+    int height = super.allyBoard.board[0].length;
     List<Coord> takenShots = new ArrayList<>();
 
     int maxAllowed = 0;
-    for (boolean[] bool : super.alreadyTaken) {
+    for (boolean[] bool : super.) {
       for (boolean b : bool) {
         if (!b) {
           maxAllowed++;

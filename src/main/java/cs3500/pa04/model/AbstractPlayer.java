@@ -8,15 +8,66 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Abstraction of the Player implementation
+ * Abstract class for Player, used to represent Ai, Player, and possible more later on.
  */
 public abstract class AbstractPlayer implements Player {
-  private final Random random;
-  protected Board board;
-  protected boolean[][] alreadyTaken;
+  /**
+   * The board that consists of the enemy's empty and the personal board
+   */
+  protected Board allyBoard;
+  /**
+   * Sees if the game is over
+   */
+  protected boolean isGameOver;
+  /**
+   * A list of coords that have been used so another ship doesnt occupy the same tile
+   */
+  protected List<Coord> usedCoord = new ArrayList<>();
+  /**
+   * Temporary storage for coords to go in ships
+   */
+  protected List<Coord> tempCoords = new ArrayList<>();
+  /**
+   * Ships that are on the board
+   */
+  protected List<Ship> ships = new ArrayList<>();
+  /**
+   * Current number of tiles that have ships on them
+   */
+  protected int numOfTilesOccupied;
+  /**
+   * Number of ships present
+   */
+  protected int numOfShips;
+  /**
+   * Height of the ship
+   */
+  protected int shipHeight;
+  /**
+   * Width of the ship
+   */
+  protected int shipWidth;
+  /**
+   * Tiles that have a hit ship occupying it
+   */
+  protected List<Coord> tilesThatHitShips = new ArrayList<>();
+  /**
+   * Ships that are sunk and should not be able to "fire" at any enemy ships
+   */
+  protected List<Coord> alreadySunkShips = new ArrayList<>();
+  /**
+   * Common View field for the ships
+   */
+  protected BattleSalvoView view;
 
-  public AbstractPlayer() {
-    this.random = new Random();
+  /**
+   * Constructor
+   *
+   * @param view used to standardize the view used throughout the code
+   */
+  AbstractPlayer(BattleSalvoView view) {
+    this.view = view;
+    this.isGameOver = false;
   }
 
   /**
@@ -39,81 +90,114 @@ public abstract class AbstractPlayer implements Player {
    */
   @Override
   public List<Ship> setup(int height, int width, Map<ShipType, Integer> specifications) {
-    List<Ship> fleet = new ArrayList<>();
-
-    for (ShipType st : specifications.keySet()) {
-      int size = st.size();
-      for (int i = 0; i < specifications.get(st); i++) {
-        Coord[] coords = generateShipCoords(height, width, size);
-        while (overlaps(fleet, coords)) {
-          coords = generateShipCoords(height, width, size);
-        }
-        fleet.add(new Ship(st, coords));
-      }
-    }
-
-    this.board = new Board(height, width, fleet);
-    this.alreadyTaken = new boolean[width][height];
-    for (boolean[] bool : this.alreadyTaken) {
-      Arrays.fill(bool, false);
-    }
-    return fleet;
+    shipHeight = height;
+    shipWidth = width;
+    final ShipType carrier = ShipType.CARRIER;
+    final ShipType battleship = ShipType.BATTLESHIP;
+    final ShipType destroyer = ShipType.DESTROYER;
+    final ShipType submarine = ShipType.SUBMARINE;
+    generateShipCoords(carrier, specifications, height, width);
+    generateShipCoords(battleship, specifications, height, width);
+    generateShipCoords(destroyer, specifications, height, width);
+    generateShipCoords(submarine, specifications, height, width);
+    numOfTilesOccupied = specifications.get(carrier) * carrier.size
+        + specifications.get(battleship) * battleship.size
+        + specifications.get(destroyer) * destroyer.size
+        + specifications.get(submarine) * submarine.size;
+    numOfShips = specifications.get(carrier) + specifications.get(battleship)
+        + specifications.get(destroyer) + specifications.get(submarine);
+    allyBoard = new Board(height, width);
+    allyBoard.formShip(ships);
+    return ships;
   }
 
   /**
-   * Generates coordinates within the game's bounds for a single ship
+   * generates the coords for each ships
    *
-   * @param height Board height
-   * @param width  Board width
-   * @param size   Ship size
-   * @return Fixed array of coords
+   * @param shipType       the type of ship that needs to be generated
+   * @param specifications how many of those types of ships need to be generated
+   * @param height         the height of the board
+   * @param width          the width of the board
    */
-  private Coord[] generateShipCoords(int height, int width, int size) {
-    Coord[] coords = new Coord[size];
-    int x;
-    int y;
-
-    // True = Vertical
-    // False = Horizontal
-    boolean orientation = this.random.nextBoolean();
-
-    // Vertical
-    if (orientation) {
-      x = this.random.nextInt(width);
-      y = this.random.nextInt(height - size + 1);
-      for (int i = 0; i < size; i++) {
-        coords[i] = new Coord(x, y + i);
+  private void generateShipCoords(ShipType shipType, Map<ShipType, Integer> specifications,
+                                  int height, int width) {
+    int xbound = width - shipType.size + 1;
+    int ybound = height - shipType.size + 1;
+    for (int i = 0; i < specifications.get(shipType); i++) {
+      Random rand = new Random();
+      int horv = rand.nextInt(0, 2);
+      int x;
+      int y;
+      // Ship will be vertical
+      if (horv == 0) {
+        x = rand.nextInt(width);
+        y = rand.nextInt(ybound);
+        if (coordsAreValid(x, y, shipType, "vertical")) {
+          list(shipType);
+        } else {
+          tempCoords.clear();
+          i--;
+        }
+      } else {
+        x = rand.nextInt(xbound);
+        y = rand.nextInt(height);
+        if (coordsAreValid(x, y, shipType, "horizontal")) {
+          list(shipType);
+        } else {
+          tempCoords.clear();
+          i--;
+        }
       }
-    // Horizontal
+    }
+  }
+
+  /**
+   * used to add coords to the list of ships
+   *
+   * @param shipType specifty the ship that will be added to the ship list
+   */
+  private void list(ShipType shipType) {
+    Coord[] coordsToAdd = new Coord[this.tempCoords.size()];
+    for (int i = 0; i < this.tempCoords.size(); i++) {
+      Coord c = this.tempCoords.get(i);
+      coordsToAdd[i] = new Coord(c.x(), c.y());
+      usedCoord.add(c);
+    }
+    ships.add(new Ship(shipType, coordsToAdd));
+    tempCoords.clear();
+  }
+
+  /**
+   * Checks to see if the coords are valid
+   *
+   * @param x           X-value given
+   * @param y           y-value iven
+   * @param shipType    the ship type
+   * @param orientation whether it is facing horizontally or vertically.
+   * @return boolean value seeing if this ship is valid or not
+   */
+  private boolean coordsAreValid(int x, int y, ShipType shipType, String orientation) {
+    boolean valid = true;
+    int axisToChange;
+    Coord coordToAdd;
+    if (orientation.equals("vertical")) {
+      axisToChange = y;
     } else {
-      x = this.random.nextInt(width - size + 1);
-      y = this.random.nextInt(height);
-      for (int i = 0; i < size; i++) {
-        coords[i] = new Coord(x + i, y);
-      }
+      axisToChange = x;
     }
-
-    return coords;
-  }
-
-  /**
-   * Checks if coordinates overlap with other ships' coordinates
-   *
-   * @param ships  List of ships
-   * @param coords Fixed array of coordinates
-   * @return Whether there is an overlap or not
-   */
-  private boolean overlaps(List<Ship> ships, Coord[] coords) {
-    for (Ship s : ships) {
-      for (Coord shipCoords : s.coords()) {
-        for (Coord coord : coords) {
-          if (shipCoords.x() == coord.x() && shipCoords.y() == coord.y()) {
-            return true;
-          }
-        }
+    for (int i = 0; i < shipType.size; i++) {
+      if (orientation.equals("vertical")) {
+        coordToAdd = new Coord(x, axisToChange);
+      } else {
+        coordToAdd = new Coord(axisToChange, y);
       }
+      tempCoords.add(coordToAdd);
+      if (usedCoord.contains(coordToAdd)) {
+        valid = false;
+      }
+      axisToChange++;
     }
-    return false;
+    return valid;
   }
 
   /**
@@ -131,42 +215,62 @@ public abstract class AbstractPlayer implements Player {
    *
    * @param opponentShotsOnBoard the opponent's shots on this player's board
    * @return a filtered list of the given shots that contain all locations of shots that hit a
-   *     ship on this board
+   *         ship on this board
    */
   @Override
   public List<Coord> reportDamage(List<Coord> opponentShotsOnBoard) {
-    // Hits
-    List<Coord> hits = new ArrayList<>();
-    // Hits that affect the player
-    List<Coord> myHits = new ArrayList<>();
-    // Misses that affect the player
-    List<Coord> misses = new ArrayList<>();
-
-    for (Coord shipCoord : this.board.shipLocations.keySet()) {
-      for (Coord oppCoord : opponentShotsOnBoard) {
-        if (shipCoord.x() == oppCoord.x() && shipCoord.y() == oppCoord.y()) {
-          myHits.add(oppCoord);
-          hits.add(shipCoord);
-        } else {
-          misses.add(oppCoord);
-        }
+    List<Coord> coordsThatHit = new ArrayList<>();
+    for (Coord c : opponentShotsOnBoard) {
+      if (usedCoord.contains(c)) {
+        coordsThatHit.add(c);
+        tilesThatHitShips.add(c);
       }
     }
+    showHitsOnBoard(coordsThatHit, allyBoard.board);
+    anyShipsSunk();
+    return coordsThatHit;
+  }
 
-    this.board.setShots(myHits, Impact.HIT);
-    this.board.setShots(misses, Impact.MISS);
-
-    return hits;
+  /**
+   * Checks to see if a ship has been sunk by checking if a ship has gotten all of its coords hit
+   */
+  private void anyShipsSunk() {
+    for (Ship s : ships) {
+      boolean shipSunk = true;
+      for (Coord c : s.coords()) {
+        if (!tilesThatHitShips.contains(c) || alreadySunkShips.contains(c)) {
+          shipSunk = false;
+          break;
+        }
+      }
+      if (shipSunk) {
+        numOfShips--;
+        alreadySunkShips.addAll(Arrays.stream(s.coords()).toList());
+      }
+    }
   }
 
   /**
    * Reports to this player what shots in their previous volley returned from takeShots()
-   * successfully hit an opponent's ship. (This method isn't needed, so it is empty)
+   * successfully hit an opponent's ship.
    *
-   * @param shotsThatHitOpponentShips the list of shots that successfully hit the opponent's ships
+   * @param shotsThatHitOpponentShips the list of shots that successfully hit the opponent's ships.
    */
   @Override
   public void successfulHits(List<Coord> shotsThatHitOpponentShips) {
+    showHitsOnBoard(shotsThatHitOpponentShips, allyBoard.enemyBoard);
+  }
+
+  /**
+   * Shows the coords on the board
+   *
+   * @param coordsThatHit List of coords that have hit ships
+   * @param side          marks the ally or enemy board depending on specifications
+   */
+  private void showHitsOnBoard(List<Coord> coordsThatHit, String[][] side) {
+    for (Coord c : coordsThatHit) {
+      side[c.x()][c.y()] = "H";
+    }
   }
 
   /**
@@ -178,12 +282,6 @@ public abstract class AbstractPlayer implements Player {
    */
   @Override
   public void endGame(GameResult result, String reason) {
-    BattleSalvoView bsv = new BattleSalvoView();
-    switch (result) {
-      case WIN -> bsv.showSuccess(this.name() + " wins the game!");
-      case LOSE -> bsv.showFailure(this.name() + " lost...");
-      default -> bsv.showText(this.name() + " had a draw.");
-    }
-    bsv.showText(reason);
+    //view.printToConsole("You " + result.outcome + " : " + reason);
   }
 }
