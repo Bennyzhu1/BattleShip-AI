@@ -3,9 +3,11 @@ package cs3500.pa04.controller;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import cs3500.pa04.MockAiPlayer;
 import cs3500.pa04.MockManualPlayer;
+import cs3500.pa04.model.AiPlayer;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.MoveData;
 import java.io.ByteArrayInputStream;
@@ -63,6 +65,17 @@ class BattleSalvoControllerTest {
     InputStream input = new ByteArrayInputStream(str.getBytes());
     bsc = new BattleSalvoController(mockManualPlayer, mockAiPlayer, input);
     assertDoesNotThrow(() -> bsc.runGame());
+    out.reset();
+
+    // Test a draw
+    str = """
+        6 6
+        2 2 1 1""";
+    input = new ByteArrayInputStream(str.getBytes());
+    bsc = new BattleSalvoController(new AiPlayer(), new AiPlayer(), input);
+    assertDoesNotThrow(() -> bsc.runGame());
+    assertTrue(out.toString().contains("Player Ai had a draw."));
+    assertTrue(out.toString().contains("Player Ai had a draw with Player Ai"));
     out.reset();
   }
 

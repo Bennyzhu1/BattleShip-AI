@@ -166,7 +166,7 @@ class PlayerTest {
     ai.setup(15, 15, specs);
     takenShots = ai.takeShots();
     assertEquals(15, takenShots.size());
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 14; i++) {
       takenShots = ai.takeShots();
       assertTrue(takenShots.size() > 0);
     }

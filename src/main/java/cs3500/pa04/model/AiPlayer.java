@@ -2,7 +2,6 @@ package cs3500.pa04.model;
 
 import cs3500.pa04.view.BattleSalvoView;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -51,25 +50,13 @@ public class AiPlayer extends AbstractPlayer {
     for (int i = 0; i < Math.min(board.standingShips.size(), maxAllowed); i++) {
       x = random.nextInt(width);
       y = random.nextInt(height);
+      while (this.alreadyTaken[x][y]) {
+        x = random.nextInt(width);
+        y = random.nextInt(height);
+      }
       takenShots.add(new Coord(x, y));
-
-      List<Coord> noDupes = new HashSet<>(takenShots).stream().toList();
-
-      if (i == board.standingShips.size() - 1 && noDupes.size() < takenShots.size()) {
-        i = takenShots.size() - noDupes.size();
-        takenShots = new ArrayList<>(noDupes);
-      }
-
-      if (noDupes.size() == board.standingShips.size()) {
-        takenShots = new ArrayList<>(noDupes);
-        break;
-      }
+      this.alreadyTaken[x][y] = true;
     }
-
-    for (Coord coord : takenShots) {
-      this.alreadyTaken[coord.x()][coord.y()] = true;
-    }
-
     return takenShots;
   }
 }

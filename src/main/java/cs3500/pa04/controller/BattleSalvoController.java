@@ -164,7 +164,7 @@ public class BattleSalvoController {
     List<Coord> oppShots = opponent.takeShots();
     List<Coord> myShots = player.takeShots();
 
-    while (myShots.size() > 0 && oppShots.size() > 0) {
+    while (myShots.size() != 0) {
       List<Coord> myTakenHits = player.reportDamage(oppShots);
       List<Coord> oppTakenHits = opponent.reportDamage(myShots);
       player.successfulHits(oppTakenHits);

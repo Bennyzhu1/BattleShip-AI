@@ -148,6 +148,7 @@ public class ProxyController {
   private void handleSuccessfulHits(JsonNode arguments) {
     CoordinatesJson successfulHitsArgs = this.mapper.convertValue(arguments,
         CoordinatesJson.class);
+    this.player.successfulHits(successfulHitsArgs.coordinates());
 
     MessageJson successfulHitsResponse =
         new MessageJson("successful-hits", this.mapper.createObjectNode());
@@ -161,6 +162,7 @@ public class ProxyController {
    */
   private void handleEndgame(JsonNode arguments) {
     EndGameJson endGameArgs = this.mapper.convertValue(arguments, EndGameJson.class);
+    this.player.endGame(endGameArgs.result(), endGameArgs.reason());
     try {
       this.server.close();
     } catch (IOException e) {
