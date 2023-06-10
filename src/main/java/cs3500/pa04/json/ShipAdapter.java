@@ -7,6 +7,7 @@ import cs3500.pa04.model.Direction;
 import cs3500.pa04.model.Ship;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Optional;
 
 /**
  * Serializable structure for ships
@@ -22,9 +23,20 @@ public class ShipAdapter {
    * @param ship The Ship
    */
   public ShipAdapter(Ship ship) {
-    this(ship.coords()[0], ship.coords().length,
+    Direction direction =
         Arrays.stream(ship.coords()).allMatch(coord -> coord.y() == ship.coords()[0].y())
-            ? Direction.VERTICAL : Direction.HORIZONTAL);
+            ? Direction.HORIZONTAL : Direction.VERTICAL;
+    Optional<Coord> start;
+    if (direction == Direction.HORIZONTAL) {
+      start = Arrays.stream(ship.coords()).max(Comparator.comparingInt(Coord::y));
+    } else {
+      start = Arrays.stream(ship.coords()).min(Comparator.comparingInt(Coord::x));
+    }
+
+    assert start.isPresent();
+    this.coord = start.get();
+    this.length = ship.coords().length;
+    this.direction = direction;
   }
 
   /**

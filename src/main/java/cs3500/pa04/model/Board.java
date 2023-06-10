@@ -47,8 +47,10 @@ public class Board {
   public void setShots(List<Coord> shots, Impact impactType) {
     if (impactType == Impact.HIT) {
       for (Coord coord : shots) {
-        this.grid[coord.x()][coord.y()] = impactType.name().charAt(0);
-        this.shipLocations.remove(coord);
+        if (this.grid[coord.x()][coord.y()] != 'H') {
+          this.grid[coord.x()][coord.y()] = impactType.name().charAt(0);
+          this.shipLocations.remove(coord);
+        }
       }
       this.standingShips = new HashSet<>(this.shipLocations.values()).stream().toList();
     }
