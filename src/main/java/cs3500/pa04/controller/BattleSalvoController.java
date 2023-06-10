@@ -181,7 +181,9 @@ public class BattleSalvoController {
       myShots = player.takeShots();
     }
 
-    this.battleResult(player, opponent, myShots.size(), oppShots.size());
+    int myRemaining = this.player.takeShots().size();
+    int oppRemaining = this.opponent.takeShots().size();
+    this.battleResult(player, opponent, myRemaining, oppRemaining);
   }
 
   /**
