@@ -1,30 +1,43 @@
 package cs3500.pa04.model;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Class for the boards in the game
+ * Represents the Board data
  */
 public class Board {
-  /**
-   * The players board with ships
-   */
-  public String[][] board;
-  /**
-   * The enemys board without ships present
-   */
-  public String[][] enemyBoard;
+  public final char[][] grid;
+  public final Map<Coord, Ship> shipLocations;
+  public List<Ship> standingShips;
 
   /**
-   * Board Constructor
+   * Board constructor
    *
-   * @param height Height of the given board.
-   * @param width  Width of the given board
+   * @param height Height of board
+   * @param width  Width of board
    */
-  public Board(int height, int width) {
-    this.board = new String[width][height];
-    this.enemyBoard = new String[width][height];
+  public Board(int height, int width, List<Ship> ships) {
+    this.grid = new char[width][height];
+
+    for (char[] chars : this.grid) {
+      Arrays.fill(chars, '0');
+    }
+
+    shipLocations = new HashMap<>();
+    for (Ship ship : ships) {
+      for (Coord coord : ship.coords()) {
+        shipLocations.put(coord, ship);
+        this.grid[coord.x()][coord.y()] = ship.shipType().name().charAt(0);
+      }
+    }
+    this.standingShips = ships;
+
   }
+
   /**
    * Sets the board's shots
    *
