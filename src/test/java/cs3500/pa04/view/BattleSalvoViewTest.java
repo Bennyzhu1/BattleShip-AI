@@ -2,6 +2,7 @@ package cs3500.pa04.view;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import cs3500.pa04.model.Board;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.Ship;
 import cs3500.pa04.model.ShipType;

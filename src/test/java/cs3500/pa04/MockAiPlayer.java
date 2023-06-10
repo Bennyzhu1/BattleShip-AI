@@ -1,5 +1,6 @@
 package cs3500.pa04;
 
+import cs3500.pa04.model.AbstractPlayer;
 import cs3500.pa04.model.Coord;
 import java.util.ArrayList;
 import java.util.List;

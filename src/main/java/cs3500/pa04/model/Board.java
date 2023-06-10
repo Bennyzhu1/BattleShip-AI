@@ -35,7 +35,6 @@ public class Board {
       }
     }
     this.standingShips = ships;
-
   }
 
   /**

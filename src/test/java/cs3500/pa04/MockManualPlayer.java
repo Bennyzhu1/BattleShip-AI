@@ -3,6 +3,7 @@ package cs3500.pa04;
 import cs3500.pa04.model.Coord;
 import java.util.ArrayList;
 import java.util.List;
+import cs3500.pa04.model.AbstractPlayer;
 
 /**
  * Mock manual player for testing the game and controller
