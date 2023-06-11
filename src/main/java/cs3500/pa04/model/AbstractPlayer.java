@@ -86,7 +86,7 @@ public abstract class AbstractPlayer implements Player {
       for (int i = 0; i < size; i++) {
         coords[i] = new Coord(x, y + i);
       }
-    // Horizontal
+      // Horizontal
     } else {
       x = this.random.nextInt(width - size + 1);
       y = this.random.nextInt(height);
@@ -133,7 +133,7 @@ public abstract class AbstractPlayer implements Player {
    *
    * @param opponentShotsOnBoard the opponent's shots on this player's board
    * @return a filtered list of the given shots that contain all locations of shots that hit a
-   *     ship on this board
+   * ship on this board
    */
   @Override
   public List<Coord> reportDamage(List<Coord> opponentShotsOnBoard) {
@@ -169,7 +169,7 @@ public abstract class AbstractPlayer implements Player {
    */
   @Override
   public void successfulHits(List<Coord> shotsThatHitOpponentShips) {
-    for (Coord c: shotsThatHitOpponentShips) {
+    for (Coord c : shotsThatHitOpponentShips) {
       if (c.x() > 0) {
         coordsLikely.add(new Coord(c.x() - 1, c.y()));
       }
