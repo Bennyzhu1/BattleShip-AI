@@ -27,13 +27,6 @@ public class Driver {
       } catch (RuntimeException e) {
         throw new RuntimeException("An unexpected error occurred.");
       }
-
-      //    Controller controller;
-      //    Socket socket;
-      //    Player player;
-
-      //    controller = new ProxyController(socket, player);
-      //    controller.run();
     } else if (args.length == 2) {
       String host = args[0];
       int port;

@@ -170,16 +170,16 @@ public abstract class AbstractPlayer implements Player {
   @Override
   public void successfulHits(List<Coord> shotsThatHitOpponentShips) {
     for (Coord c: shotsThatHitOpponentShips) {
-      if (c.x() != 0) {
+      if (c.x() > 0) {
         coordsLikely.add(new Coord(c.x() - 1, c.y()));
       }
-      if (c.x() != board.grid.length - 1) {
+      if (c.x() < board.grid.length - 1) {
         coordsLikely.add(new Coord(c.x() + 1, c.y()));
       }
-      if (c.y() != 0) {
+      if (c.y() > 0) {
         coordsLikely.add(new Coord(c.x(), c.y() - 1));
       }
-      if (c.y() != board.grid.length - 1) {
+      if (c.y() < board.grid[0].length - 1) {
         coordsLikely.add(new Coord(c.x(), c.y() + 1));
       }
     }
