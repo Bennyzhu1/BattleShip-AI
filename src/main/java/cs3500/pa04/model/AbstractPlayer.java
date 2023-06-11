@@ -14,6 +14,7 @@ public abstract class AbstractPlayer implements Player {
   private final Random random;
   protected Board board;
   protected boolean[][] alreadyTaken;
+  protected List<Coord> coordsLikely;
 
   public AbstractPlayer() {
     this.random = new Random();
@@ -167,6 +168,20 @@ public abstract class AbstractPlayer implements Player {
    */
   @Override
   public void successfulHits(List<Coord> shotsThatHitOpponentShips) {
+    for (Coord c: shotsThatHitOpponentShips) {
+      if (c.x() != 1) {
+        coordsLikely.add(new Coord(c.x() - 1, c.y()));
+      }
+      if (c.x() != board.grid.length - 1) {
+        coordsLikely.add(new Coord(c.x() + 1, c.y()));
+      }
+      if (c.y() != 1) {
+        coordsLikely.add(new Coord(c.x(), c.y() - 1));
+      }
+      if (c.y() != board.grid.length - 1) {
+        coordsLikely.add(new Coord(c.x(), c.y() + 1));
+      }
+    }
   }
 
   /**

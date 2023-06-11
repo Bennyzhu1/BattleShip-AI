@@ -46,16 +46,24 @@ public class AiPlayer extends AbstractPlayer {
         }
       }
     }
-
+    // Good idea for this, make a list of coords that only encompass every other square, so
+    // we only aim for half the squares instead of every single one, and because each ship is
+    // bigger than 1 tile, we will guarantee hit every single ship
     for (int i = 0; i < Math.min(board.standingShips.size(), maxAllowed); i++) {
-      x = random.nextInt(width);
-      y = random.nextInt(height);
-      while (this.alreadyTaken[x][y]) {
+      if (!coordsLikely.isEmpty()) {
+        Coord currentCoord = coordsLikely.get(0);
+        this.alreadyTaken[currentCoord.x()][currentCoord.y()] = true;
+        takenShots.add(coordsLikely.remove(0));
+      } else {
         x = random.nextInt(width);
         y = random.nextInt(height);
+        while (this.alreadyTaken[x][y]) {
+          x = random.nextInt(width);
+          y = random.nextInt(height);
+        }
+        takenShots.add(new Coord(x, y));
+        this.alreadyTaken[x][y] = true;
       }
-      takenShots.add(new Coord(x, y));
-      this.alreadyTaken[x][y] = true;
     }
     return takenShots;
   }
