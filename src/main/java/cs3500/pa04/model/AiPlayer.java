@@ -72,7 +72,6 @@ public class AiPlayer extends AbstractPlayer {
         remainingShots--;
       }
     }
-    System.out.println(takenShots);
     return takenShots;
   }
 }
