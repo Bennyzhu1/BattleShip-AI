@@ -2,6 +2,7 @@ package cs3500.pa04.client;
 
 import cs3500.pa04.controller.BattleSalvoController;
 import cs3500.pa04.model.AiPlayer;
+import cs3500.pa04.model.BetterAiPlayer;
 import cs3500.pa04.model.ManualPlayer;
 import cs3500.pa04.model.Player;
 import java.io.IOException;
@@ -27,13 +28,6 @@ public class Driver {
       } catch (RuntimeException e) {
         throw new RuntimeException("An unexpected error occurred.");
       }
-
-      //    Controller controller;
-      //    Socket socket;
-      //    Player player;
-
-      //    controller = new ProxyController(socket, player);
-      //    controller.run();
     } else if (args.length == 2) {
       String host = args[0];
       int port;
@@ -53,7 +47,7 @@ public class Driver {
 
   private static void runClient(String host, int port) throws IOException, IllegalStateException {
     Socket socket = new Socket(host, port);
-    Player localPlayer = new AiPlayer();
+    Player localPlayer = new BetterAiPlayer();
     ProxyController proxyController = new ProxyController(socket, localPlayer);
     proxyController.run();
   }
