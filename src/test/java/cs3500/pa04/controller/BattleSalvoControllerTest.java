@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import cs3500.pa04.MockAiPlayer;
 import cs3500.pa04.MockManualPlayer;
 import cs3500.pa04.model.AiPlayer;
+import cs3500.pa04.model.BetterAiPlayer;
 import cs3500.pa04.model.Coord;
 import cs3500.pa04.model.MoveData;
 import java.io.ByteArrayInputStream;
@@ -61,9 +62,9 @@ class BattleSalvoControllerTest {
     // Test a functional game
     String str = """
         6 6
-        1 1 1 3""";
+        1 1 1 1""";
     InputStream input = new ByteArrayInputStream(str.getBytes());
-    bsc = new BattleSalvoController(mockManualPlayer, mockAiPlayer, input);
+    bsc = new BattleSalvoController(new AiPlayer(), new AiPlayer(), input);
     assertDoesNotThrow(() -> bsc.runGame());
     out.reset();
   }
