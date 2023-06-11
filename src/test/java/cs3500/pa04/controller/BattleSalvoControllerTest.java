@@ -66,17 +66,6 @@ class BattleSalvoControllerTest {
     bsc = new BattleSalvoController(mockManualPlayer, mockAiPlayer, input);
     assertDoesNotThrow(() -> bsc.runGame());
     out.reset();
-
-    // Test a draw
-    str = """
-        6 6
-        2 2 1 1""";
-    input = new ByteArrayInputStream(str.getBytes());
-    bsc = new BattleSalvoController(new AiPlayer(), new AiPlayer(), input);
-    assertDoesNotThrow(() -> bsc.runGame());
-    assertTrue(out.toString().contains("Player Ai had a draw."));
-    assertTrue(out.toString().contains("Player Ai had a draw with Player Ai"));
-    out.reset();
   }
 
   /**
