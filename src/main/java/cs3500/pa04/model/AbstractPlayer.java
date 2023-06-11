@@ -15,10 +15,12 @@ public abstract class AbstractPlayer implements Player {
   protected Board board;
   protected boolean[][] alreadyTaken;
   protected List<Coord> coordsLikely;
+  protected List<Coord> shootableCoords;
 
   public AbstractPlayer() {
     this.random = new Random();
     this.coordsLikely = new ArrayList<>();
+    this.shootableCoords = new ArrayList<>();
   }
 
   /**
@@ -53,13 +55,30 @@ public abstract class AbstractPlayer implements Player {
         fleet.add(new Ship(st, coords));
       }
     }
-
+    this.createShootableCoords(height, width);
     this.board = new Board(height, width, fleet);
     this.alreadyTaken = new boolean[width][height];
     for (boolean[] bool : this.alreadyTaken) {
       Arrays.fill(bool, false);
     }
     return fleet;
+  }
+
+  private void createShootableCoords(int height, int width) {
+    boolean placeCoord;
+    int alternate = 1;
+    for (int i = 0; i < height; i++) {
+      placeCoord = alternate % 2 == 1;
+      alternate++;
+      for (int j = 0; j < width; j++) {
+        if (placeCoord) {
+          shootableCoords.add(new Coord(j, i));
+          placeCoord = false;
+        } else {
+          placeCoord = true;
+        }
+      }
+    }
   }
 
   /**

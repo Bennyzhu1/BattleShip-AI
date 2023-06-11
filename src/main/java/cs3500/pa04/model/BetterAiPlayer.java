@@ -1,6 +1,5 @@
 package cs3500.pa04.model;
 
-import cs3500.pa04.view.BattleSalvoView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -34,18 +33,7 @@ public class BetterAiPlayer extends AbstractPlayer {
     int width = board.grid.length;
     int height = board.grid[0].length;
     List<Coord> takenShots = new ArrayList<>();
-
-    int maxAllowed = 0;
-    for (boolean[] bool : super.alreadyTaken) {
-      for (boolean b : bool) {
-        if (!b) {
-          maxAllowed++;
-        }
-      }
-    }
-    // Good idea for this, make a list of coords that only encompass every other square, so
-    // we only aim for half the squares instead of every single one, and because each ship is
-    // bigger than 1 tile, we will guarantee hit every single ship
+    int maxAllowed = getMaxAllowedShots();
     int remainingShots = Math.min(board.standingShips.size(), maxAllowed);
     while (remainingShots > 0) {
       if (!coordsLikely.isEmpty()) {
@@ -58,17 +46,39 @@ public class BetterAiPlayer extends AbstractPlayer {
           coordsLikely.remove(0);
         }
       } else {
-        x = random.nextInt(width);
-        y = random.nextInt(height);
-        while (this.alreadyTaken[x][y]) {
+        if (!shootableCoords.isEmpty()) {
+          int indexOfCoordToShootAt = random.nextInt(shootableCoords.size());
+          Coord shootHere = shootableCoords.remove(indexOfCoordToShootAt);
+          if (!this.alreadyTaken[shootHere.x()][shootHere.y()]) {
+            this.alreadyTaken[shootHere.x()][shootHere.y()] = true;
+            takenShots.add(shootHere);
+            remainingShots--;
+          }
+        } else {
           x = random.nextInt(width);
           y = random.nextInt(height);
+          while (this.alreadyTaken[x][y]) {
+            x = random.nextInt(width);
+            y = random.nextInt(height);
+          }
+          takenShots.add(new Coord(x, y));
+          this.alreadyTaken[x][y] = true;
+          remainingShots--;
         }
-        takenShots.add(new Coord(x, y));
-        this.alreadyTaken[x][y] = true;
-        remainingShots--;
       }
     }
     return takenShots;
+  }
+
+  private int getMaxAllowedShots() {
+    int maxAllowed = 0;
+    for (boolean[] bool : super.alreadyTaken) {
+      for (boolean b : bool) {
+        if (!b) {
+          maxAllowed++;
+        }
+      }
+    }
+    return maxAllowed;
   }
 }
