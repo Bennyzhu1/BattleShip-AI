@@ -57,9 +57,8 @@ public class ProxyController {
         MessageJson message = jsonParser.readValueAs(MessageJson.class);
         this.delegateMessage(message);
       }
-
     } catch (IOException e) {
-      throw new RuntimeException("Disconnected from server or failed to parse");
+      System.err.println("Disconnected from server or failed to parse");
     }
   }
 
@@ -68,29 +67,42 @@ public class ProxyController {
    *
    * @param message The deserialized message
    */
-  public void delegateMessage(MessageJson message) {
+  private void delegateMessage(MessageJson message) {
     String methodName = message.methodName();
     JsonNode arguments = message.arguments();
 
+    JsonNode args;
+    boolean shouldEnd = false;
     switch (methodName) {
-      case "join" -> doJoin();
-      case "setup" -> handleSetup(arguments);
-      case "take-shots" -> doTakeShots();
-      case "report-damage" -> handleDamageReport(arguments);
-      case "successful-hits" -> handleSuccessfulHits(arguments);
-      case "end-game" -> handleEndgame(arguments);
-      default -> throw new IllegalStateException("Unknown server response");
+      case "join" -> args = doJoin();
+      case "setup" -> args = handleSetup(arguments);
+      case "take-shots" -> args = doTakeShots();
+      case "report-damage" -> args = handleDamageReport(arguments);
+      case "successful-hits" -> args = handleSuccessfulHits(arguments);
+      case "end-game" -> {
+        args = handleEndgame(arguments);
+        shouldEnd = true;
+      }
+      default -> args = this.mapper.createObjectNode();
+    }
+
+    this.out.println(JsonUtils.serializeRecord(new MessageJson(methodName, args)));
+
+    if (shouldEnd) {
+      try {
+        this.server.close();
+      } catch (IOException e) {
+        System.err.println(e.getMessage());
+      }
     }
   }
 
   /**
    * Joins a game
    */
-  private void doJoin() {
+  private JsonNode doJoin() {
     JoinJson joinJson = new JoinJson(this.player.name(), GameType.SINGLE);
-    JsonNode joinArgs = JsonUtils.serializeRecord(joinJson);
-    MessageJson joinResponse = new MessageJson("join", joinArgs);
-    this.out.println(JsonUtils.serializeRecord(joinResponse));
+    return JsonUtils.serializeRecord(joinJson);
   }
 
   /**
@@ -98,7 +110,7 @@ public class ProxyController {
    *
    * @param arguments The arguments that contain a width, height, and fleet-spec
    */
-  private void handleSetup(JsonNode arguments) {
+  private JsonNode handleSetup(JsonNode arguments) {
     SetupAdapter setupArgs = this.mapper.convertValue(arguments, SetupAdapter.class);
     List<Ship> fleet =
         this.player.setup(setupArgs.height(), setupArgs.width(), setupArgs.fleetSpec());
@@ -108,19 +120,15 @@ public class ProxyController {
       adaptedFleet.add(new ShipAdapter(ship));
     }
     FleetJson fleetJson = new FleetJson(adaptedFleet);
-    JsonNode fleetArgs = JsonUtils.serializeRecord(fleetJson);
-    MessageJson fleetResponse = new MessageJson("setup", fleetArgs);
-    this.out.println(JsonUtils.serializeRecord(fleetResponse));
+    return JsonUtils.serializeRecord(fleetJson);
   }
 
   /**
    * Takes shots from the local player
    */
-  private void doTakeShots() {
+  private JsonNode doTakeShots() {
     CoordinatesJson takeShotsCoordinates = new CoordinatesJson(this.player.takeShots());
-    JsonNode coordinatesArgs = JsonUtils.serializeRecord(takeShotsCoordinates);
-    MessageJson takeShotsResponse = new MessageJson("take-shots", coordinatesArgs);
-    this.out.println(JsonUtils.serializeRecord(takeShotsResponse));
+    return JsonUtils.serializeRecord(takeShotsCoordinates);
   }
 
   /**
@@ -129,14 +137,11 @@ public class ProxyController {
    *
    * @param arguments The coordinates
    */
-  private void handleDamageReport(JsonNode arguments) {
+  private JsonNode handleDamageReport(JsonNode arguments) {
     CoordinatesJson reportDamageArgs = this.mapper.convertValue(arguments, CoordinatesJson.class);
     List<Coord> damage = this.player.reportDamage(reportDamageArgs.coordinates());
     CoordinatesJson damageJson = new CoordinatesJson(damage);
-
-    JsonNode reportDamageJson = JsonUtils.serializeRecord(damageJson);
-    MessageJson reportDamageResponse = new MessageJson("report-damage", reportDamageJson);
-    this.out.println(JsonUtils.serializeRecord(reportDamageResponse));
+    return JsonUtils.serializeRecord(damageJson);
   }
 
 
@@ -145,14 +150,11 @@ public class ProxyController {
    *
    * @param arguments The coordinates
    */
-  private void handleSuccessfulHits(JsonNode arguments) {
+  private JsonNode handleSuccessfulHits(JsonNode arguments) {
     CoordinatesJson successfulHitsArgs = this.mapper.convertValue(arguments,
         CoordinatesJson.class);
     this.player.successfulHits(successfulHitsArgs.coordinates());
-
-    MessageJson successfulHitsResponse =
-        new MessageJson("successful-hits", this.mapper.createObjectNode());
-    this.out.println(JsonUtils.serializeRecord(successfulHitsResponse));
+    return this.mapper.createObjectNode();
   }
 
   /**
@@ -160,14 +162,9 @@ public class ProxyController {
    *
    * @param arguments Result and reason deserialized
    */
-  private void handleEndgame(JsonNode arguments) {
+  private JsonNode handleEndgame(JsonNode arguments) {
     EndGameJson endGameArgs = this.mapper.convertValue(arguments, EndGameJson.class);
     this.player.endGame(endGameArgs.result(), endGameArgs.reason());
-    try {
-      this.server.close();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return this.mapper.createObjectNode();
   }
-
 }
