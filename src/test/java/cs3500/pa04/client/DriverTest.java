@@ -3,7 +3,6 @@ package cs3500.pa04.client;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import cs3500.pa04.client.Driver;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -25,7 +24,7 @@ class DriverTest {
     System.setOut(new PrintStream(out));
 
     assertDoesNotThrow(Driver::new);
-    assertThrows(RuntimeException.class, () -> Driver.main(new String[] {}));
+    assertDoesNotThrow(() -> Driver.main(new String[] {}));
 
     String input = """
         EXIT 6
@@ -39,5 +38,10 @@ class DriverTest {
     InputStream inStream = new ByteArrayInputStream(input.getBytes());
     assertDoesNotThrow(() -> System.setIn(inStream));
     assertDoesNotThrow(() -> Driver.main(new String[] {}));
+
+    // For the server part of the Driver
+    assertDoesNotThrow(() -> Driver.main(new String[] {"0.0.0.0", "35001"}));
+    assertDoesNotThrow(() -> Driver.main(new String[] {"0.0.0.0", "NOT_A_NUMBER"}));
+    assertDoesNotThrow(() -> Driver.main(new String[] {"0.0.0.0", "35001", "CS"}));
   }
 }

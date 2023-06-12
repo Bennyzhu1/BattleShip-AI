@@ -26,7 +26,7 @@ public class Driver {
       try {
         bsc.runGame();
       } catch (RuntimeException e) {
-        throw new RuntimeException("An unexpected error occurred.");
+        System.err.println("An unexpected error occurred.");
       }
     } else if (args.length == 2) {
       String host = args[0];
@@ -34,13 +34,14 @@ public class Driver {
       try {
         port = Integer.parseInt(args[1]);
       } catch (NumberFormatException e) {
-        throw new RuntimeException("The port must be a number.");
+        System.err.println("The port must be a number.");
+        return;
       }
 
       try {
         Driver.runClient(host, port);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
+      } catch (IOException | IllegalStateException e) {
+        System.err.println(e.getMessage());
       }
     }
   }
