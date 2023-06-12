@@ -70,6 +70,11 @@ public class BetterAiPlayer extends AbstractPlayer {
     return takenShots;
   }
 
+  /**
+   * Get the max iterations allowed when taking shots.
+   *
+   * @return The max allowed iterations
+   */
   private int getMaxAllowedShots() {
     int maxAllowed = 0;
     for (boolean[] bool : super.alreadyTaken) {

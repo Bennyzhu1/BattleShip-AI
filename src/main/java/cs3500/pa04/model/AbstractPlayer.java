@@ -17,6 +17,9 @@ public abstract class AbstractPlayer implements Player {
   protected List<Coord> coordsLikely;
   protected List<Coord> shootableCoords;
 
+  /**
+   * Constructor for our abstract player
+   */
   public AbstractPlayer() {
     this.random = new Random();
     this.coordsLikely = new ArrayList<>();
@@ -64,6 +67,12 @@ public abstract class AbstractPlayer implements Player {
     return fleet;
   }
 
+  /**
+   * Creates a lists of every other coord on the board
+   *
+   * @param height the height of the board
+   * @param width the width of the board
+   */
   private void createShootableCoords(int height, int width) {
     boolean placeCoord;
     int alternate = 1;
