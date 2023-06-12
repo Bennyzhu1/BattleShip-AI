@@ -31,6 +31,7 @@ class PlayerTest {
 
   Player mp;
   Player ai;
+  Player bai;
 
   /**
    * Sets the players and streams to defaults
@@ -39,6 +40,7 @@ class PlayerTest {
   void setUp() {
     mp = new ManualPlayer();
     ai = new AiPlayer();
+    bai = new BetterAiPlayer();
     out = new ByteArrayOutputStream();
     System.setOut(new PrintStream(out));
   }
@@ -62,6 +64,9 @@ class PlayerTest {
 
     assertEquals("Player Ai", ai.name());
     assertEquals("PLAYER AI", ai.name().toUpperCase());
+
+    assertEquals("KiyonoKara", bai.name());
+    assertEquals("KIYONOKARA", bai.name().toUpperCase());
   }
 
   /**
@@ -308,4 +313,60 @@ class PlayerTest {
     assertDoesNotThrow(() -> mp.successfulHits(new ArrayList<>()));
     assertDoesNotThrow(() -> ai.successfulHits(new ArrayList<>()));
   }
+
+  /**
+   * Test the Ai player's takeShots method
+   */
+  @Test
+  void testTakeShotsBetterAi() {
+    // Mock specifications of ships
+    HashMap<ShipType, Integer> specs = new HashMap<>();
+    specs.put(ShipType.CARRIER, 1);
+    specs.put(ShipType.BATTLESHIP, 1);
+    specs.put(ShipType.DESTROYER, 1);
+    specs.put(ShipType.SUBMARINE, 1);
+    bai.setup(8, 8, specs);
+    List<Coord> takenShots = bai.takeShots();
+    assertTrue(takenShots.size() > 0);
+    out.reset();
+
+    // Test none
+    bai.setup(8, 8, new HashMap<>());
+    takenShots = bai.takeShots();
+    assertEquals(0, takenShots.size());
+
+    specs.put(ShipType.CARRIER, 2);
+    specs.put(ShipType.BATTLESHIP, 5);
+    specs.put(ShipType.DESTROYER, 5);
+    specs.put(ShipType.SUBMARINE, 3);
+
+    // Test large
+    bai.setup(15, 15, specs);
+    takenShots = bai.takeShots();
+    assertEquals(15, takenShots.size());
+    for (int i = 0; i < 14; i++) {
+      takenShots = bai.takeShots();
+      assertTrue(takenShots.size() > 0);
+    }
+
+    // Test large
+    bai.setup(15, 15, specs);
+    List<Coord> mockShots = new ArrayList<>();
+    mockShots.add(new Coord(2, 2));
+    mockShots.add(new Coord(1, 1));
+    bai.successfulHits(mockShots);
+    takenShots = bai.takeShots();
+    assertEquals(15, takenShots.size());
+    assertTrue(takenShots.contains(new Coord(1, 2)));
+    assertTrue(takenShots.contains(new Coord(3, 2)));
+    assertTrue(takenShots.contains(new Coord(2, 1)));
+    assertTrue(takenShots.contains(new Coord(2, 3)));
+    assertTrue(takenShots.contains(new Coord(1, 0)));
+    assertTrue(takenShots.contains(new Coord(0, 1)));
+    for (int i = 0; i < 14; i++) {
+      takenShots = bai.takeShots();
+      assertTrue(takenShots.size() > 0);
+    }
+  }
+
 }
